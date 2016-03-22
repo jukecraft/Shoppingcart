@@ -3,7 +3,14 @@
  */
 package com.hmrc.shop.inventory;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 import com.hmrc.shop.Inventory;
 import com.hmrc.shop.Item;
@@ -19,23 +26,46 @@ import org.slf4j.LoggerFactory;
  */
 public class FruitInventory implements Inventory {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FruitInventory.class);
-	
+
 	private List<Fruit> fruitStore;
-	
-	FruitInventory(String fruitfile) {
-		//TODO : Update the collection from the given fruit file.
+
+	public FruitInventory(String fruitfile) throws Exception {
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			File f = new File(new File("").getAbsolutePath()+fruitfile);
+			input = new FileInputStream(f);
+			prop.load(input);
+			fruitStore = prop.keySet().stream().map(key->new Fruit((String)key, Double.parseDouble((String)prop.getProperty((String)key, "0.0")))).collect(Collectors.toList());
+		} catch (IOException ex) {
+			LOGGER.debug(ex.getMessage());
+			throw ex;
+		} finally {
+			if (input != null) {
+					input.close();
+			}
+		}
 	}
 
+	/**
+	 * Beware that this method returns null if the given item is not found. The user is advised to use 
+	 * the isAvailable before invoking this method.
+	 */
 	@Override
 	public Item getItem(String name, int quantity) {
-		// TODO Auto-generated method stub
+		Optional<Fruit> fruitOptional = fruitStore.stream().filter(f -> f.getName().equals(name)).findAny();
+		if (fruitOptional.isPresent()) {
+			Fruit fruit = fruitOptional.get();
+			fruit.updateQuantity(quantity);
+			return fruit;
+		}
+		LOGGER.debug("The item is not valid. A null is returned.");
 		return null;
 	}
 
 	@Override
-	public boolean isAvailable(String name, int quantity) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isAvailable(String name) {
+		return fruitStore.stream().anyMatch(f->f.getName().equals(name));
 	}
 
 }

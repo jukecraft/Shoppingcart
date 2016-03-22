@@ -9,5 +9,5 @@ package com.hmrc.shop;
  */
 public interface Inventory {
 	public Item getItem(String name, int quantity);
-	public boolean isAvailable(String name, int quantity);
+	public boolean isAvailable(String name);
 }

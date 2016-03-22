@@ -14,43 +14,35 @@ public class Fruit implements Item {
 	private String name;
 	private double unitCost;
 	private int quantity;
-	Fruit(String name, double unitCost, int quantity) {
-		this.name = name;
-		this.unitCost = unitCost;
-		this.quantity = quantity;
-	}
 
-	Fruit(String name, double unitCost) {
+	public Fruit(String name, double unitCost) {
 		this.name = name;
 		this.unitCost = unitCost;
 	}
 	
 	@Override
 	public void updateQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.name;
 	}
 
 	@Override
 	public Double getUnitCost() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.unitCost;
 	}
 
 	@Override
 	public int getQuantity() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.quantity;
 	}
 
 	@Override
 	public Double getItemCost() {
-		// TODO Auto-generated method stub
-		return null;
+		return unitCost * quantity;
 	}
 
 }
