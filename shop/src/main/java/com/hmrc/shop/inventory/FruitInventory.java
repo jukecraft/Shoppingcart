@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import com.hmrc.shop.Inventory;
 import com.hmrc.shop.Item;
+import com.hmrc.shop.TechnicalFailureException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,20 +32,11 @@ public class FruitInventory implements Inventory {
 
 	public FruitInventory(String fruitfile) throws Exception {
 		Properties prop = new Properties();
-		InputStream input = null;
-		try {
-			File f = new File(new File("").getAbsolutePath()+fruitfile);
-			input = new FileInputStream(f);
+		File f = new File(new File("").getAbsolutePath()+fruitfile);
+		try (InputStream input = new FileInputStream(f) ) {
 			prop.load(input);
 			fruitStore = prop.keySet().stream().map(key->new Fruit((String)key, Double.parseDouble((String)prop.getProperty((String)key, "0.0")))).collect(Collectors.toList());
-		} catch (IOException ex) {
-			LOGGER.debug(ex.getMessage());
-			throw ex;
-		} finally {
-			if (input != null) {
-					input.close();
-			}
-		}
+		} 
 	}
 
 	/**
