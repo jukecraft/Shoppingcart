@@ -48,4 +48,6 @@ I have extensively used streams and lambda. The handling of null and exceptions 
 The following code sinppet was noticed after the check-in. This could have been better handled.
 
 DecimalFormat df = new DecimalFormat("#.##"); in Calculator.java line 144. This could have been specified as a global variable.
+
+The Step 2 of handling offers is developed as part of the Calculator method. If one would consider Step 2 as a new requirement or a change request, it is nice to extend the Calculator as CalculateWithOffer, override the generate method, and reuse the super class method's functionality. Thereby 'Open to extension and Close to Modification' principle would be respected.
  
